@@ -6,6 +6,7 @@ const HEIGHT = 18
 
 
 var points = {}
+var walls = {}
 var timer = 0
 
 func _ready():
@@ -29,7 +30,7 @@ func spawn():
 			break
 	add_child(a)
 	a.global_position = map2global(p)
-	points[p] = a	
+	points[p] = a
 
 func has_apple(p):
 	p = p.floor()
@@ -39,5 +40,17 @@ func remove_apple(p):
 	points[p].queue_free()
 	points.erase(p)
 
+func add_tail_wall(t):
+	add_child(t)
+	var p = global2map(t.global_position)
+	walls[p] = true
+	t.connect("destroy", self, 'remove_wall', [p], CONNECT_ONESHOT)
+
+func remove_wall(p):
+	walls.erase(p)
+
 func map2global(v : Vector2) -> Vector2:
 	return (v + Vector2.ONE/2) * global.CELL_SIZE
+
+func global2map(v: Vector2) -> Vector2:
+	return (v / global.CELL_SIZE).floor()

@@ -1,13 +1,14 @@
 extends Node2D
 
-const STEP_TIME = 0.5
-
+const STEP_TIMES = [0.5, 0.15]
+var speed = 0
 var linear_vel = Vector2(1,0)
 var direction = 0
 var map_pos
 var timer = 0
 var input_dir = 0
 var tail_nodes = []
+var tail_points = {}
 var apple_points = 0
 
 var TailPart = preload("res://Scenes/snake_tail.tscn")
@@ -18,21 +19,39 @@ func _ready():
 	map_pos = (global_position / global.CELL_SIZE).floor()
 	global_position = Vector2()
 	head.global_position = map2global(map_pos)
-	for i in range(2):
+	var count = 10
+	for i in range(count):
 		var t = TailPart.instance()
-		t.frame = 8 - i*8 + i * head.hframes
+		if i < count - 1:
+			t.frame = 4
+		else:
+			t.frame = head.hframes
+
 		add_child(t)
 		t.global_position = map2global(map_pos - (i+1)*Vector2(1,0))
 		tail_nodes.push_back(t)
+		tail_points[map_pos - (i+1)*Vector2(1,0)] = t
 
 func _process(delta):
 	timer += delta
-	if timer > STEP_TIME:
-		timer -= STEP_TIME
+	if timer > STEP_TIMES[speed]:
+		timer -= STEP_TIMES[speed]
 		
 		var next_direction = (direction + input_dir + 4) % 4
 		var next_linear_vel = Vector2(1 - next_direction % 2, next_direction % 2) * (1 - int(next_direction / 2) % 2 * 2)
 		var next_pos = map_pos + next_linear_vel 
+		
+		if next_pos in tail_points:
+			var indx = tail_nodes.find(tail_points[next_pos])
+			tail_nodes[indx].queue_free()
+			for i in range(len(tail_nodes)-1, indx, -1):
+				var t = tail_nodes[i]
+				remove_child(t)
+				global.map.add_tail_wall(t)
+				tail_points.erase(global2map(t.global_position))
+				t.to_destroy()
+				tail_nodes.remove(i)
+			tail_nodes.remove(indx)
 		
 		var t
 		
@@ -43,16 +62,19 @@ func _process(delta):
 			add_child(t)
 		else:
 			t =  tail_nodes.pop_back()
+			tail_points.erase(global2map(t.global_position))
 		
 		if input_dir == 0:
-			t.frame = 8 + direction
+			t.frame = 4 + direction
 		elif input_dir > 0:
 			t.frame = direction
 		else:
 			t.frame = (direction + 1) % 4
 		 
 		t.global_position = map2global(map_pos)
+		
 		tail_nodes.push_front(t)
+		tail_points[global2map(t.global_position)] = t
 		
 		direction = next_direction
 		linear_vel = next_linear_vel
@@ -64,7 +86,7 @@ func _process(delta):
 			apple_points += 1
 		
 		head.global_position = map2global(map_pos)
-		head.frame = 4 + direction
+		head.frame = 8 + direction + head.hframes * (speed & 1)
 		
 		
 		var last = len(tail_nodes) - 1
@@ -90,6 +112,8 @@ func _process(delta):
 		input_dir = -1
 	if Input.is_action_just_pressed("turn_right"):
 		input_dir = 1
+	if Input.is_action_just_pressed("speedup"):
+		speed = (speed & 2) + (1 - (speed & 1))
 
 func map2global(v : Vector2) -> Vector2:
 	return (v + Vector2.ONE/2) * global.CELL_SIZE
