@@ -19,6 +19,10 @@ config/name="snake-defence"
 run/main_scene="res://Scenes/main.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+global="*res://Scripts/global.gd"
+
 [input]
 
 turn_left={
