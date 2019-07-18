@@ -1,0 +1,6 @@
+*.kra
+*~
+.import/
+Exports/
+export_presets.cfg
+*#
