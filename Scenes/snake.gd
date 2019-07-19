@@ -21,7 +21,7 @@ func _ready():
 	map_pos = (global_position / global.CELL_SIZE).floor()
 	global_position = Vector2()
 	head.global_position = map2global(map_pos)
-	var count = 10
+	var count = 2
 	for i in range(count):
 		var t = TailPart.instance()
 		if i < count - 1:
@@ -37,7 +37,7 @@ func _ready():
 func _process(delta):
 	timer += delta
 	if timer > STEP_TIMES[speed]:
-		timer -= STEP_TIMES[speed]
+		timer = fmod(timer, STEP_TIMES[speed])
 		
 		var next_direction = (direction + input_dir + 4) % 4
 		var next_linear_vel = Vector2(1 - next_direction % 2, next_direction % 2) * (1 - int(next_direction / 2) % 2 * 2)
@@ -51,8 +51,6 @@ func _process(delta):
 		if next_pos in tail_points:
 			var indx = tail_nodes.find(tail_points[next_pos])
 			cut_tail(indx+1)
-			tail_nodes[indx].queue_free()
-			tail_nodes.remove(indx)
 			
 		var t
 		
@@ -107,7 +105,7 @@ func _process(delta):
 			tail_nodes[last].frame = direction + head.hframes
 		
 		input_dir = 0
-		
+		update_camera()
 	
 	if Input.is_action_just_pressed("turn_left"):
 		input_dir = -1
@@ -115,6 +113,10 @@ func _process(delta):
 		input_dir = 1
 	if Input.is_action_just_pressed("speedup"):
 		speed = (speed & 2) + (1 - (speed & 1))
+
+func update_camera():
+	if is_instance_valid(global.camera):
+		global.camera.global_position = $head.global_position
 
 func cut_tail(indx = 0):
 	for i in range(len(tail_nodes)-1, indx-1, -1):

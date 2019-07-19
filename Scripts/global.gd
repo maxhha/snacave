@@ -4,6 +4,8 @@ const CELL_SIZE = 4*8
 
 # warning-ignore:unused_class_variable
 var map
+# warning-ignore:unused_class_variable
+var camera
 
 # Declare member variables here. Examples:
 # var a = 2

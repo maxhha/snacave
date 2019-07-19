@@ -10,8 +10,59 @@ var timer = 0
 
 func _ready():
 	randomize()
+	
+	var M = preload("res://Scripts/maptools.gd")
+	var m = preload("res://Scripts/intMap.gd").new(Vector2(WIDTH, HEIGHT), 0)
+	
+	var plus_mask = M.create_map_from_string(".#.\n#@#\n.#.", 1)
+	var line3 = M.create_map_from_string("##@##\n", 1)
+	m.bit_noise(0.6)
+	m.and_mask(plus_mask)
+	m.or_mask(plus_mask)
+	m.sub2i(1)
+	m.set_bounds()
+	m.and_mask(plus_mask)
+	m.and_mask(plus_mask)
+	m.or_mask(plus_mask)
+	m.set_bounds()
+	
+	for x in range(WIDTH):
+		for y in range(HEIGHT):
+			var p = Vector2(x, y)
+			if m.get(p):
+				walls[p] = true
+				$walls.set_cell(x,y,0)
+	
+	
+	m.sub2i(1)
+	m.and_mask(line3, true)
+	var possible_starts = []
+	for x in range(WIDTH):
+		for y in range(HEIGHT):
+			var p = Vector2(x, y)
+			if m.get(p):
+				possible_starts.push_back(p)
+	var indx = randi() % len(possible_starts)
+	
+	var s = preload("snake.tscn").instance()
+	s.global_position = map2global(possible_starts[indx])
+	add_child(s)
+	
 	global.map = self
-	$snake.connect("dead", self, "_on_player_dead")
+	global.camera = $camera
+	if has_node("snake"):
+		$snake.connect("dead", self, "_on_player_dead")
+		$snake.update_camera()
+	else:
+		$camera.anchor_mode = Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT
+	update_border_polygon()
+	get_tree().connect("screen_resized", self, "update_border_polygon")
+
+func update_border_polygon(data=null):
+	$borders.invert_border = get_viewport_rect().size.x / 2
+	for i in range(4):
+		var p = $borders.polygon[i]
+		$borders.polygon[i] = Vector2(WIDTH*sign(p.x), HEIGHT*sign(p.y)) * global.CELL_SIZE
 
 func _on_player_dead():
 	$snake.cut_tail()
@@ -35,7 +86,7 @@ func spawn():
 	var p
 	while true:
 		p = Vector2(randi() % WIDTH, randi() % HEIGHT)
-		if points.get(p) == null:
+		if points.get(p) == null and not walls.get(p):
 			break
 	add_child(a)
 	a.global_position = map2global(p)
