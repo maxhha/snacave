@@ -17,14 +17,14 @@ func _ready():
 	
 	var plus_mask = M.create_map_from_string(".#.\n#@#\n.#.", 1)
 	var line3 = M.create_map_from_string("##@##\n", 1)
-#	m.bit_noise(0.6)
-#	m.and_mask(plus_mask)
-#	m.or_mask(plus_mask)
-#	m.sub2i(1)
-#	m.set_bounds()
-#	m.and_mask(plus_mask)
-#	m.and_mask(plus_mask)
-#	m.or_mask(plus_mask)
+	m.bit_noise(0.6)
+	m.and_mask(plus_mask)
+	m.or_mask(plus_mask)
+	m.sub2i(1)
+	m.set_bounds()
+	m.and_mask(plus_mask)
+	m.and_mask(plus_mask)
+	m.or_mask(plus_mask)
 	m.set_bounds()
 	
 	for x in range(WIDTH):
@@ -50,7 +50,7 @@ func _ready():
 	add_child(s)
 	
 	for i in range(10):
-		var e = preload("res://Scenes/enemy1.tscn").instance()
+		var e = preload("res://Scenes/enemy2.tscn").instance()
 		var p 
 		while true:
 			p =Vector2(randi() % WIDTH, randi() % HEIGHT)

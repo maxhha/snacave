@@ -1,11 +1,13 @@
 extends Node2D
 
 const STEP_TIMES = [0.5, 0.15]
+const SPEEDUP_TIMEOUT = 1
 var speed = 0
 var linear_vel = Vector2(1,0)
 var direction = 0
 var map_pos
 var timer = 0
+var speedup_timer = 0
 var input_dir = 0
 var tail_nodes = []
 var tail_points = {}
@@ -36,7 +38,20 @@ func _ready():
 
 func _process(delta):
 	timer += delta
-	if timer > STEP_TIMES[speed] and is_instance_valid(self):
+	
+	if speed & 1 and tail_nodes.size() < 2:
+		speed = speed & 2
+	
+	speedup_timer += (speed & 1) * delta
+	
+	if speedup_timer >= SPEEDUP_TIMEOUT:
+		speedup_timer = fmod(speedup_timer, SPEEDUP_TIMEOUT)
+		var t = tail_nodes.pop_back()
+		tail_points.erase(global2map(t.global_position))
+		t.queue_free()
+		
+	
+	if timer >= STEP_TIMES[speed] and is_instance_valid(self):
 		timer = fmod(timer, STEP_TIMES[speed])
 		
 		var next_direction = (direction + input_dir + 4) % 4
@@ -116,7 +131,8 @@ func _process(delta):
 	if Input.is_action_just_pressed("turn_right"):
 		input_dir = 1
 	if Input.is_action_just_pressed("speedup"):
-		speed = (speed & 2) + (1 - (speed & 1))
+		if (speed & 1) or tail_nodes.size() > 1:
+			speed = (speed & 2) + (1 - (speed & 1))
 
 func update_camera():
 	if is_instance_valid(global.camera):
