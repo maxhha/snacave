@@ -50,7 +50,7 @@ func _ready():
 	add_child(s)
 	
 	for i in range(10):
-		var e = preload("res://Scenes/enemy2.tscn").instance()
+		var e = preload("res://Scenes/enemy4.tscn").instance()
 		var p 
 		while true:
 			p =Vector2(randi() % WIDTH, randi() % HEIGHT)

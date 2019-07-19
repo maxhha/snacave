@@ -1,6 +1,7 @@
 extends Sprite
 
-const STEP_TIME = 0.5
+export (float) var STEP_TIME = 0.5
+export (int) var BASE_FRAME = 44
 var direction = randi() % 4
 var last_map_pos
 var map_pos
@@ -24,7 +25,7 @@ func _process(delta):
 			if not (global.map.has_wall(next) or global.map.get_enemy(next)):
 				map_pos = next
 				direction = d
-				frame = 44 + direction
+				frame = BASE_FRAME + direction
 				if is_instance_valid(global.snake):
 					if global.snake.is_at(map_pos):
 						if global.snake.can_hit(map_pos, map_pos - global.dir2vec(d)):
