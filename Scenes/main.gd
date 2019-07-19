@@ -4,7 +4,6 @@ const SPAWN_TIMEOUT = 3
 const WIDTH = 32
 const HEIGHT = 18
 
-
 var points = {}
 var walls = {}
 var timer = 0
@@ -12,6 +11,16 @@ var timer = 0
 func _ready():
 	randomize()
 	global.map = self
+	$snake.connect("dead", self, "_on_player_dead")
+
+func _on_player_dead():
+	$snake.cut_tail()
+	var t = $snake.TailPart.instance()
+	t.frame = $snake/head.frame
+	t.global_position = $snake/head.global_position
+	t.to_destroy()
+	add_tail_wall(t)
+	t.connect('destroy', get_tree(), "reload_current_scene")
 
 func _process(delta):
 	timer += delta
@@ -47,7 +56,12 @@ func add_tail_wall(t):
 	t.connect("destroy", self, 'remove_wall', [p], CONNECT_ONESHOT)
 
 func remove_wall(p):
+	p = p.floor()
 	walls.erase(p)
+
+func has_wall(p):
+	p = p.floor()
+	return walls.get(p)
 
 func map2global(v : Vector2) -> Vector2:
 	return (v + Vector2.ONE/2) * global.CELL_SIZE

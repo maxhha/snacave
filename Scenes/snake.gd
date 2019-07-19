@@ -15,6 +15,8 @@ var TailPart = preload("res://Scenes/snake_tail.tscn")
 
 onready var head = $head
 
+signal dead;
+
 func _ready():
 	map_pos = (global_position / global.CELL_SIZE).floor()
 	global_position = Vector2()
@@ -41,18 +43,17 @@ func _process(delta):
 		var next_linear_vel = Vector2(1 - next_direction % 2, next_direction % 2) * (1 - int(next_direction / 2) % 2 * 2)
 		var next_pos = map_pos + next_linear_vel 
 		
+		if global.map.has_wall(next_pos):
+			emit_signal("dead")
+			queue_free()
+			return
+		
 		if next_pos in tail_points:
 			var indx = tail_nodes.find(tail_points[next_pos])
+			cut_tail(indx+1)
 			tail_nodes[indx].queue_free()
-			for i in range(len(tail_nodes)-1, indx, -1):
-				var t = tail_nodes[i]
-				remove_child(t)
-				global.map.add_tail_wall(t)
-				tail_points.erase(global2map(t.global_position))
-				t.to_destroy()
-				tail_nodes.remove(i)
 			tail_nodes.remove(indx)
-		
+			
 		var t
 		
 		if apple_points > 0:
@@ -114,6 +115,15 @@ func _process(delta):
 		input_dir = 1
 	if Input.is_action_just_pressed("speedup"):
 		speed = (speed & 2) + (1 - (speed & 1))
+
+func cut_tail(indx = 0):
+	for i in range(len(tail_nodes)-1, indx-1, -1):
+		var t = tail_nodes[i]
+		remove_child(t)
+		global.map.add_tail_wall(t)
+		tail_points.erase(global2map(t.global_position))
+		t.to_destroy()
+		tail_nodes.remove(i)
 
 func map2global(v : Vector2) -> Vector2:
 	return (v + Vector2.ONE/2) * global.CELL_SIZE

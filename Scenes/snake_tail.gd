@@ -4,7 +4,7 @@ const DESTROY_TIME = 10
 
 signal destroy()
 
-var timer = 0
+var timer = randf()
 var _d = false
 
 func to_destroy():
