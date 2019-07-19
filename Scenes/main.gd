@@ -1,11 +1,12 @@
 extends Node2D
 
 const SPAWN_TIMEOUT = 3
-const WIDTH = 32
-const HEIGHT = 18
+const WIDTH = 32#128
+const HEIGHT = 32#128
 
 var points = {}
 var walls = {}
+var enemies = {}
 var timer = 0
 
 func _ready():
@@ -16,14 +17,14 @@ func _ready():
 	
 	var plus_mask = M.create_map_from_string(".#.\n#@#\n.#.", 1)
 	var line3 = M.create_map_from_string("##@##\n", 1)
-	m.bit_noise(0.6)
-	m.and_mask(plus_mask)
-	m.or_mask(plus_mask)
-	m.sub2i(1)
-	m.set_bounds()
-	m.and_mask(plus_mask)
-	m.and_mask(plus_mask)
-	m.or_mask(plus_mask)
+#	m.bit_noise(0.6)
+#	m.and_mask(plus_mask)
+#	m.or_mask(plus_mask)
+#	m.sub2i(1)
+#	m.set_bounds()
+#	m.and_mask(plus_mask)
+#	m.and_mask(plus_mask)
+#	m.or_mask(plus_mask)
 	m.set_bounds()
 	
 	for x in range(WIDTH):
@@ -48,11 +49,24 @@ func _ready():
 	s.global_position = map2global(possible_starts[indx])
 	add_child(s)
 	
+	for i in range(10):
+		var e = preload("res://Scenes/enemy1.tscn").instance()
+		var p 
+		while true:
+			p =Vector2(randi() % WIDTH, randi() % HEIGHT)
+			if m.get(p):
+				m.set(p, 0)
+				break
+		e.global_position = map2global(p)
+		add_child(e)
+		e.connect('dead', self, '_on_enemy_dead', [e], CONNECT_ONESHOT)
+	
 	global.map = self
 	global.camera = $camera
 	if has_node("snake"):
 		$snake.connect("dead", self, "_on_player_dead")
 		$snake.update_camera()
+		global.snake = $snake
 	else:
 		$camera.anchor_mode = Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT
 	update_border_polygon()
@@ -72,6 +86,9 @@ func _on_player_dead():
 	t.to_destroy()
 	add_tail_wall(t)
 	t.connect('destroy', get_tree(), "reload_current_scene")
+
+func _on_enemy_dead(e):
+	enemies.erase(e.last_map_pos)
 
 func _process(delta):
 	timer += delta
@@ -113,6 +130,22 @@ func remove_wall(p):
 func has_wall(p):
 	p = p.floor()
 	return walls.get(p)
+
+func get_enemy(p):
+	p = p.floor()
+	var e = enemies.get(p)
+	assert(not is_instance_valid(e) or "enemy" in e.filename)
+#	if (e and not is_instance_valid(e)) or (is_instance_valid(e) or not "enemy" in e.filename):
+#		enemies.erase(p)
+#		print('~~~~~~~~~~~~~~~~~~~hotfix', p)
+	
+	return e
+
+func move_enemy(e):
+	if e.last_map_pos:
+		enemies[e.last_map_pos] = null
+	e.last_map_pos = e.map_pos
+	enemies[e.map_pos] = e
 
 func map2global(v : Vector2) -> Vector2:
 	return (v + Vector2.ONE/2) * global.CELL_SIZE

@@ -36,7 +36,7 @@ func _ready():
 
 func _process(delta):
 	timer += delta
-	if timer > STEP_TIMES[speed]:
+	if timer > STEP_TIMES[speed] and is_instance_valid(self):
 		timer = fmod(timer, STEP_TIMES[speed])
 		
 		var next_direction = (direction + input_dir + 4) % 4
@@ -44,8 +44,7 @@ func _process(delta):
 		var next_pos = map_pos + next_linear_vel 
 		
 		if global.map.has_wall(next_pos):
-			emit_signal("dead")
-			queue_free()
+			kill()
 			return
 		
 		if next_pos in tail_points:
@@ -83,6 +82,11 @@ func _process(delta):
 		if global.map.has_apple(next_pos):
 			global.map.remove_apple(next_pos)
 			apple_points += 1
+		
+		var e = global.map.get_enemy(next_pos)
+		if e:
+			apple_points += 1
+			e.kill()
 		
 		head.global_position = map2global(map_pos)
 		head.frame = 8 + direction + head.hframes * (speed & 1)
@@ -126,6 +130,28 @@ func cut_tail(indx = 0):
 		tail_points.erase(global2map(t.global_position))
 		t.to_destroy()
 		tail_nodes.remove(i)
+
+func is_at(p:Vector2) -> bool:
+	return p == map_pos or p in tail_points
+ 
+func can_hit(p: Vector2, s: Vector2) -> bool:
+	return (p == map_pos 
+			and s - p != global.dir2vec(direction)
+		) or p in tail_points
+
+func hit(pos):
+	if pos == map_pos:
+		kill()
+		return
+	var indx = tail_nodes.find(tail_points[pos])
+	if indx == 0:
+		kill()
+	else:
+		cut_tail(indx)
+
+func kill():
+	emit_signal("dead")
+	queue_free()
 
 func map2global(v : Vector2) -> Vector2:
 	return (v + Vector2.ONE/2) * global.CELL_SIZE

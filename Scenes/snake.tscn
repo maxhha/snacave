@@ -5,6 +5,7 @@
 
 [node name="snake" type="Node2D"]
 position = Vector2( 99.75, 94.05 )
+z_index = 16
 script = ExtResource( 1 )
 
 [node name="head" type="Sprite" parent="."]
