@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Sprites/sprites.png" type="Texture" id=1]
+[ext_resource path="res://Scenes/enemy3.gd" type="Script" id=2]
+
+[node name="enemy3" type="Sprite"]
+position = Vector2( 99.75, 94.05 )
+scale = Vector2( 8, 8 )
+z_index = 8
+texture = ExtResource( 1 )
+vframes = 8
+hframes = 16
+frame = 76
+script = ExtResource( 2 )
