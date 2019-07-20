@@ -12,3 +12,5 @@ vframes = 8
 hframes = 16
 frame = 76
 script = ExtResource( 2 )
+STEP_TIME = 0.2
+BASE_FRAME = 76
