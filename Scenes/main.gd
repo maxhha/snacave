@@ -1,8 +1,8 @@
 extends Node2D
 
 const SPAWN_TIMEOUT = 3
-const WIDTH = 32#128
-const HEIGHT = 32#128
+const WIDTH = 128
+const HEIGHT = 128
 
 var points = {}
 var walls = {}
@@ -49,7 +49,7 @@ func _ready():
 	s.global_position = map2global(possible_starts[indx])
 	add_child(s)
 	
-	for i in range(10):
+	for i in range(0):
 		var e = preload("res://Scenes/enemy4.tscn").instance()
 		var p 
 		while true:
@@ -73,7 +73,13 @@ func _ready():
 	get_tree().connect("screen_resized", self, "update_border_polygon")
 
 func update_border_polygon(data=null):
-	$borders.invert_border = get_viewport_rect().size.x / 2
+	var wall_rect = $walls.get_used_rect()
+	var top_left = -wall_rect.position * global.CELL_SIZE
+	var bottom_right = (wall_rect.end - Vector2(WIDTH, HEIGHT)) * global.CELL_SIZE
+	var viewport_size = get_viewport_rect().size
+	$borders.invert_border = (max(viewport_size.x, viewport_size.y) / 2 + 
+		max(max(top_left.x, top_left.y), max(bottom_right.x, bottom_right.y))
+		)
 	for i in range(4):
 		var p = $borders.polygon[i]
 		$borders.polygon[i] = Vector2(WIDTH*sign(p.x), HEIGHT*sign(p.y)) * global.CELL_SIZE
@@ -97,9 +103,14 @@ func _process(delta):
 		timer -= SPAWN_TIMEOUT
 
 var Apple = preload("res://Scenes/apple.tscn")
+var PowerupApple = preload("res://Scenes/powerup_apple.tscn")
 
 func spawn():
-	var a = Apple.instance()
+	var a
+	if randf() > 1:
+		a = Apple.instance()
+	else:
+		a = PowerupApple.instance()
 	var p
 	while true:
 		p = Vector2(randi() % WIDTH, randi() % HEIGHT)
@@ -109,9 +120,9 @@ func spawn():
 	a.global_position = map2global(p)
 	points[p] = a
 
-func has_apple(p):
+func get_apple(p):
 	p = p.floor()
-	return p in points
+	return points.get(p)
 
 func remove_apple(p):
 	points[p].queue_free()
@@ -126,10 +137,22 @@ func add_tail_wall(t):
 func remove_wall(p):
 	p = p.floor()
 	walls.erase(p)
+	if $walls.get_cellv(p) == 0:
+		$walls.set_cellv(p, -1)
+	elif not inside_map(p):
+		walls[p] = false
+		$walls.set_cellv(p, 1)
+		update_border_polygon()
 
 func has_wall(p):
 	p = p.floor()
-	return walls.get(p)
+	if p in walls:
+		return walls[p]
+	else:
+		return not inside_map(p)
+
+func inside_map(p):
+	return p.x >= 0 and p.y >= 0 and p.x < WIDTH and p.y < HEIGHT
 
 func get_enemy(p):
 	p = p.floor()
