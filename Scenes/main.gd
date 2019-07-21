@@ -65,17 +65,20 @@ func _ready():
 				possible_starts.push_back(p)
 	var indx = randi() % len(possible_starts)
 	
-	var s = preload("snake.tscn").instance()
-	s.global_position = map2global(possible_starts[indx])
-	add_child(s)
+	if not global.first_game:
+		var s = preload("snake.tscn").instance()
+		s.global_position = map2global(possible_starts[indx])
+		add_child(s)
 	
-	global.snake = s
-	update_reachable_places(false)
+		global.snake = s
+		update_reachable_places(false)
 	
-	for x in range(-10, 11):
-		for y in range(-10, 11):
-			m2.set(possible_starts[indx] + Vector2(x,y), 0)
-
+		for x in range(-10, 11):
+			for y in range(-10, 11):
+				m2.set(possible_starts[indx] + Vector2(x,y), 0)
+	
+	var last_enemy
+	
 	for i in range(MAX_ENEMIES):
 		i = i % len(EnemyClasses)
 		var e = EnemyClasses[i].instance()
@@ -87,6 +90,7 @@ func _ready():
 				break
 		e.global_position = map2global(p)
 		add_enemy(e)
+		last_enemy = e
 	
 # warning-ignore:unused_variable
 	for i in range(COUNT_SPAWNERS):
@@ -101,9 +105,11 @@ func _ready():
 		add_child(e)
 		spawners.push_back(e)
 	
+	if not global.first_game:
 # warning-ignore:unused_variable
-	for i in range(MAX_APPLES):
-		random_place_apple(Apple.instance())
+		for i in range(MAX_APPLES):
+			random_place_apple(Apple.instance())
+	
 	
 	global.map = self
 	global.camera = $camera
@@ -113,10 +119,17 @@ func _ready():
 		$snake.update_camera()
 		global.snake = $snake
 	else:
-		$camera.anchor_mode = Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT
+		var cam = $camera
+		remove_child(cam)
+		last_enemy.add_child(cam)
+	
 	update_border_polygon()
 # warning-ignore:return_value_discarded
 	get_tree().connect("screen_resized", self, "update_border_polygon")
+	if global.first_game:
+		$UI/anim.play('mainmenu_fadein')
+	
+	global.first_game = false
 
 func spawn_enemy():
 	var i = randi() % len(EnemyClasses)
@@ -150,11 +163,11 @@ func _on_player_dead():
 	t.global_position = $snake/head.global_position
 	t.to_destroy()
 	add_tail_wall(t)
-	$UI/Control/vbox1/wow.visible = global.new_max_score
-	$UI/Control/vbox1/lbl_score.visible = not global.new_max_score
-	$UI/Control/vbox1/score.text = str(global.sess_max_score)
-	$UI/Control/vbox2/max_score.text = str(global.max_score)
-	$UI/anim.play('fadein')
+	$UI/gameover/vbox1/wow.visible = global.new_max_score
+	$UI/gameover/vbox1/lbl_score.visible = not global.new_max_score
+	$UI/gameover/vbox1/score.text = str(global.sess_max_score)
+	$UI/gameover/vbox2/max_score.text = str(global.max_score)
+	$UI/anim.play('gameover_fadein')
 
 func _on_enemy_dead(e):
 	enemies.erase(e.last_map_pos)

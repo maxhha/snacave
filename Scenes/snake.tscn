@@ -130,3 +130,4 @@ margin_top = 56.0
 margin_right = 20.0
 margin_bottom = 70.0
 custom_fonts/font = SubResource( 2 )
+text = "2"

@@ -1,10 +1,12 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Scripts/pixel-shader.tres" type="Material" id=1]
 [ext_resource path="res://Scenes/main.gd" type="Script" id=2]
 [ext_resource path="res://Sprites/sprites.png" type="Texture" id=3]
 [ext_resource path="res://Fonts/pixelFJ8pt1__.TTF" type="DynamicFontData" id=4]
 [ext_resource path="res://Sprites/btn-play.png" type="Texture" id=5]
+[ext_resource path="res://Sprites/logo_part1.png" type="Texture" id=6]
+[ext_resource path="res://Sprites/logo_part2.png" type="Texture" id=7]
 
 [sub_resource type="TileSet" id=1]
 0/name = "wall"
@@ -43,10 +45,10 @@ action = "speedup"
 shortcut = SubResource( 4 )
 
 [sub_resource type="Animation" id=6]
-resource_name = "fadein"
+resource_name = "gameover_fadein"
 length = 1.6
 tracks/0/type = "value"
-tracks/0/path = NodePath("Control:visible")
+tracks/0/path = NodePath("gameover:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -58,7 +60,7 @@ tracks/0/keys = {
 "values": [ true ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("Control/vbox1:modulate")
+tracks/1/path = NodePath("gameover/vbox1:modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -70,7 +72,7 @@ tracks/1/keys = {
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("Control/vbox1:margin_bottom")
+tracks/2/path = NodePath("gameover/vbox1:margin_bottom")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
@@ -82,7 +84,7 @@ tracks/2/keys = {
 "values": [ -17, -49.0 ]
 }
 tracks/3/type = "value"
-tracks/3/path = NodePath("Control/vbox2:margin_bottom")
+tracks/3/path = NodePath("gameover/vbox2:margin_bottom")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/imported = false
@@ -94,7 +96,7 @@ tracks/3/keys = {
 "values": [ 137, 137, 105.009 ]
 }
 tracks/4/type = "value"
-tracks/4/path = NodePath("Control/vbox2:modulate")
+tracks/4/path = NodePath("gameover/vbox2:modulate")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/imported = false
@@ -106,19 +108,19 @@ tracks/4/keys = {
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
 }
 tracks/5/type = "value"
-tracks/5/path = NodePath("Control/play:modulate")
+tracks/5/path = NodePath("gameover/bg:color")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/imported = false
 tracks/5/enabled = true
 tracks/5/keys = {
-"times": PoolRealArray( 0, 0.8, 1.2 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0, 1.6 ),
+"transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+"values": [ Color( 0, 0, 0, 0 ), Color( 0.294118, 0.14902, 0.356863, 0.501961 ) ]
 }
 tracks/6/type = "value"
-tracks/6/path = NodePath("Control/play:disabled")
+tracks/6/path = NodePath("gameover/play:disabled")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/imported = false
@@ -130,16 +132,80 @@ tracks/6/keys = {
 "values": [ true, false ]
 }
 tracks/7/type = "value"
-tracks/7/path = NodePath("Control/bg:color")
+tracks/7/path = NodePath("gameover/play:modulate")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/imported = false
 tracks/7/enabled = true
 tracks/7/keys = {
-"times": PoolRealArray( 0, 1.6 ),
+"times": PoolRealArray( 0, 0.8, 1.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=7]
+resource_name = "mainmenu_fadein"
+length = 1.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("main_menu:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("main_menu/bg:color")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1.5 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 0.501961 ) ]
+"values": [ Color( 0.294118, 0.14902, 0.356863, 1 ), Color( 0.294118, 0.14902, 0.356863, 0.501961 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("main_menu/play:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("main_menu/play:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 1.1, 1.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("main_menu/tex2:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.7, 1.1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 
 [node name="main" type="Node2D"]
@@ -167,18 +233,18 @@ smoothing_enabled = true
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="Control" type="Control" parent="UI"]
+[node name="gameover" type="Control" parent="UI"]
+visible = false
 material = ExtResource( 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="bg" type="ColorRect" parent="UI/Control"]
+[node name="bg" type="ColorRect" parent="UI/gameover"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 0, 0, 0, 0 )
+color = Color( 0.220588, 0.111765, 0.267647, 0.376471 )
 
-[node name="vbox1" type="VBoxContainer" parent="UI/Control"]
-modulate = Color( 1, 1, 1, 0 )
+[node name="vbox1" type="VBoxContainer" parent="UI/gameover"]
 use_parent_material = true
 anchor_left = 0.5
 anchor_top = 0.5
@@ -187,13 +253,13 @@ anchor_bottom = 0.5
 margin_left = -174.0
 margin_top = -255.328
 margin_right = 174.0
-margin_bottom = -17.0
+margin_bottom = -49.0
 grow_vertical = 0
 rect_min_size = Vector2( 348, 0 )
 custom_constants/separation = 16
 alignment = 2
 
-[node name="wow" type="Label" parent="UI/Control/vbox1"]
+[node name="wow" type="Label" parent="UI/gameover/vbox1"]
 visible = false
 use_parent_material = true
 margin_right = 348.0
@@ -203,26 +269,25 @@ text = "WOW
 new record"
 align = 1
 
-[node name="lbl_score" type="Label" parent="UI/Control/vbox1"]
+[node name="lbl_score" type="Label" parent="UI/gameover/vbox1"]
 use_parent_material = true
-margin_top = 96.0
+margin_top = 64.0
 margin_right = 348.0
-margin_bottom = 150.0
+margin_bottom = 118.0
 custom_fonts/font = SubResource( 2 )
 text = "current is"
 align = 1
 
-[node name="score" type="Label" parent="UI/Control/vbox1"]
+[node name="score" type="Label" parent="UI/gameover/vbox1"]
 use_parent_material = true
-margin_top = 166.0
+margin_top = 134.0
 margin_right = 348.0
-margin_bottom = 238.0
+margin_bottom = 206.0
 custom_fonts/font = SubResource( 3 )
 text = "10"
 align = 1
 
-[node name="vbox2" type="VBoxContainer" parent="UI/Control"]
-modulate = Color( 1, 1, 1, 0 )
+[node name="vbox2" type="VBoxContainer" parent="UI/gameover"]
 use_parent_material = true
 anchor_left = 0.5
 anchor_top = 0.5
@@ -231,30 +296,30 @@ anchor_bottom = 0.5
 margin_left = -198.0
 margin_top = -36.9911
 margin_right = 198.0
-margin_bottom = 137.0
+margin_bottom = 105.009
 custom_constants/separation = 16
 alignment = 2
 
-[node name="lbl_hiscore" type="Label" parent="UI/Control/vbox2"]
+[node name="lbl_hiscore" type="Label" parent="UI/gameover/vbox2"]
 use_parent_material = true
-margin_top = 31.0
 margin_right = 396.0
-margin_bottom = 85.0
+margin_bottom = 54.0
 custom_fonts/font = SubResource( 2 )
 text = "the highest is"
 align = 1
 
-[node name="max_score" type="Label" parent="UI/Control/vbox2"]
+[node name="max_score" type="Label" parent="UI/gameover/vbox2"]
 use_parent_material = true
-margin_top = 101.0
+margin_top = 70.0
 margin_right = 396.0
-margin_bottom = 173.0
+margin_bottom = 142.0
 custom_fonts/font = SubResource( 3 )
 text = "10"
 align = 1
 
-[node name="play" type="TextureButton" parent="UI/Control"]
+[node name="play" type="TextureButton" parent="UI/gameover"]
 modulate = Color( 1, 1, 1, 0 )
+use_parent_material = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -271,6 +336,60 @@ texture_normal = ExtResource( 5 )
 expand = true
 stretch_mode = 3
 
+[node name="main_menu" type="Control" parent="UI"]
+visible = false
+material = ExtResource( 1 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="bg" type="ColorRect" parent="UI/main_menu"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.294118, 0.14902, 0.356863, 1 )
+
+[node name="tex" type="TextureRect" parent="UI/main_menu"]
+use_parent_material = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -388.0
+margin_top = -268.0
+margin_right = 388.0
+texture = ExtResource( 6 )
+
+[node name="tex2" type="TextureRect" parent="UI/main_menu"]
+use_parent_material = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -388.0
+margin_right = 388.0
+margin_bottom = 268.0
+texture = ExtResource( 7 )
+
+[node name="play" type="TextureButton" parent="UI/main_menu"]
+modulate = Color( 1, 1, 1, 0 )
+use_parent_material = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -128.0
+margin_top = -11.0081
+margin_right = 128.0
+margin_bottom = 244.992
+rect_min_size = Vector2( 256, 256 )
+disabled = true
+shortcut_in_tooltip = false
+shortcut = SubResource( 5 )
+texture_normal = ExtResource( 5 )
+expand = true
+stretch_mode = 3
+
 [node name="anim" type="AnimationPlayer" parent="UI"]
-anims/fadein = SubResource( 6 )
-[connection signal="pressed" from="UI/Control/play" to="." method="_on_play_pressed"]
+anims/gameover_fadein = SubResource( 6 )
+anims/mainmenu_fadein = SubResource( 7 )
+[connection signal="pressed" from="UI/gameover/play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="UI/main_menu/play" to="." method="_on_play_pressed"]
