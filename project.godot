@@ -23,6 +23,11 @@ config/icon="res://icon.png"
 
 global="*res://Scripts/global.gd"
 
+[display]
+
+window/stretch/mode="2d"
+window/stretch/aspect="expand"
+
 [input]
 
 turn_left={
@@ -46,8 +51,6 @@ speedup={
 
 [rendering]
 
-quality/driver/driver_name="GLES2"
 vram_compression/import_etc=true
-vram_compression/import_etc2=false
 environment/default_clear_color=Color( 0.513726, 0.878431, 0.298039, 1 )
 environment/default_environment="res://default_env.tres"

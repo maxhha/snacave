@@ -1,16 +1,132 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Scenes/snake.gd" type="Script" id=1]
 [ext_resource path="res://Sprites/sprites.png" type="Texture" id=2]
+[ext_resource path="res://Scripts/pixel-shader.tres" type="Material" id=3]
+[ext_resource path="res://Sprites/btn-left.png" type="Texture" id=4]
+[ext_resource path="res://Sprites/btn-speed-up.png" type="Texture" id=5]
+[ext_resource path="res://Sprites/btn-right.png" type="Texture" id=6]
+[ext_resource path="res://Fonts/pixelFJ8pt1__.TTF" type="DynamicFontData" id=7]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 128, 128 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 64
+font_data = ExtResource( 7 )
 
 [node name="snake" type="Node2D"]
+use_parent_material = true
 position = Vector2( 99.75, 94.05 )
 z_index = 16
 script = ExtResource( 1 )
 
 [node name="head" type="Sprite" parent="."]
+use_parent_material = true
 scale = Vector2( 8, 8 )
 texture = ExtResource( 2 )
 vframes = 8
 hframes = 16
 frame = 8
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="UI"]
+material = ExtResource( 3 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="buttos" type="HBoxContainer" parent="UI/Control"]
+use_parent_material = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="left" type="Control" parent="UI/Control/buttos"]
+use_parent_material = true
+margin_right = 338.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+
+[node name="wrapper" type="Control" parent="UI/Control/buttos/left"]
+use_parent_material = true
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -32.0
+margin_top = -120.0
+margin_right = 32.0
+margin_bottom = -56.0
+rect_min_size = Vector2( 64, 64 )
+
+[node name="btn" type="TouchScreenButton" parent="UI/Control/buttos/left/wrapper"]
+use_parent_material = true
+normal = ExtResource( 4 )
+shape = SubResource( 1 )
+shape_visible = false
+action = "turn_left"
+visibility_mode = 1
+
+[node name="center" type="Control" parent="UI/Control/buttos"]
+use_parent_material = true
+margin_left = 342.0
+margin_right = 680.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+
+[node name="wrapper" type="Control" parent="UI/Control/buttos/center"]
+use_parent_material = true
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -32.0
+margin_top = -120.0
+margin_right = 32.0
+margin_bottom = -56.0
+rect_min_size = Vector2( 64, 64 )
+
+[node name="btn" type="TouchScreenButton" parent="UI/Control/buttos/center/wrapper"]
+use_parent_material = true
+normal = ExtResource( 5 )
+shape = SubResource( 1 )
+shape_visible = false
+action = "speedup"
+visibility_mode = 1
+
+[node name="right" type="Control" parent="UI/Control/buttos"]
+use_parent_material = true
+margin_left = 684.0
+margin_right = 1024.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+
+[node name="wrapper" type="Control" parent="UI/Control/buttos/right"]
+use_parent_material = true
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -32.0
+margin_top = -120.0
+margin_right = 32.0
+margin_bottom = -56.0
+rect_min_size = Vector2( 64, 64 )
+
+[node name="btn" type="TouchScreenButton" parent="UI/Control/buttos/right/wrapper"]
+use_parent_material = true
+normal = ExtResource( 6 )
+shape = SubResource( 1 )
+shape_visible = false
+action = "turn_right"
+visibility_mode = 1
+
+[node name="score" type="Label" parent="UI/Control"]
+use_parent_material = true
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -20.0
+margin_top = 56.0
+margin_right = 20.0
+margin_bottom = 70.0
+custom_fonts/font = SubResource( 2 )

@@ -4,6 +4,7 @@
 [ext_resource path="res://Scenes/snake_tail.gd" type="Script" id=2]
 
 [node name="tail_part" type="Sprite"]
+use_parent_material = true
 scale = Vector2( 8, 8 )
 texture = ExtResource( 1 )
 vframes = 8

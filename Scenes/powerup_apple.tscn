@@ -5,6 +5,7 @@
 [node name="apple" type="Sprite" groups=[
 "powerup",
 ]]
+use_parent_material = true
 position = Vector2( 99.75, 94.05 )
 scale = Vector2( 8, 8 )
 texture = ExtResource( 1 )

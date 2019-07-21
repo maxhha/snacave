@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/sprites.png-49564d3af5ba7b2ac332ab0794f0f443.stex"
+path="res://.import/btn-speed-up.png-b6fe6abf22c74ca5c7c865ad8f0f4494.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/sprites.png"
-dest_files=[ "res://.import/sprites.png-49564d3af5ba7b2ac332ab0794f0f443.stex" ]
+source_file="res://Sprites/btn-speed-up.png"
+dest_files=[ "res://.import/btn-speed-up.png-b6fe6abf22c74ca5c7c865ad8f0f4494.stex" ]
 
 [params]
 

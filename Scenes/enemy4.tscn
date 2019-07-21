@@ -4,6 +4,7 @@
 [ext_resource path="res://Scenes/enemy1.gd" type="Script" id=2]
 
 [node name="enemy4" type="Sprite"]
+use_parent_material = true
 position = Vector2( 99.75, 94.05 )
 scale = Vector2( 8, 8 )
 z_index = 8

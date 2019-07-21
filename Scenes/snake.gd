@@ -2,7 +2,7 @@ extends Node2D
 
 const STEP_TIMES = [0.5, 0.15]
 const SPEEDUP_TIMEOUT = 1
-const POWERUP_TIMEOUT = 5
+const POWERUP_TIMEOUT = 10
 const POWERUP_MAX_SPEED = 0.03
 const POWERUP_MIN_SPEED = 0.5
 var BASE_FRAME = 0
@@ -20,6 +20,8 @@ var tail_points = {}
 var apple_points = 0
 
 
+
+
 var TailPart = preload("res://Scenes/snake_tail.tscn")
 
 onready var head = $head
@@ -27,6 +29,7 @@ onready var head = $head
 signal dead;
 
 func _ready():
+	
 	map_pos = (global_position / global.CELL_SIZE).floor()
 	global_position = Vector2()
 	head.global_position = map2global(map_pos)
@@ -53,15 +56,15 @@ func _process(delta):
 		finish_powerup()
 	powerup_timer = max(0, powerup_timer - delta)
 
-	if speed & 1 and tail_nodes.size() < 2:
-		speed = speed & 2
-	speedup_timer += int(speed == 1) * delta
+#	if speed & 1 and tail_nodes.size() < 2:
+#		speed = speed & 2
+#	speedup_timer += int(speed == 1) * delta
 	
-	if speedup_timer >= SPEEDUP_TIMEOUT:
-		speedup_timer = fmod(speedup_timer, SPEEDUP_TIMEOUT)
-		var t = tail_nodes.pop_back()
-		tail_points.erase(global2map(t.global_position))
-		t.queue_free()
+#	if speedup_timer >= SPEEDUP_TIMEOUT:
+#		speedup_timer = fmod(speedup_timer, SPEEDUP_TIMEOUT)
+#		var t = tail_nodes.pop_back()
+#		tail_points.erase(global2map(t.global_position))
+#		t.queue_free()
 	var time = get_step_time()
 	if timer >= time and is_instance_valid(self):
 		var d = timer
@@ -73,7 +76,7 @@ func _process(delta):
 	if Input.is_action_just_pressed("turn_right"):
 		input_dir = 1
 	if Input.is_action_just_pressed("speedup"):
-		if (speed & 1) or tail_nodes.size() > 1:
+		if (speed & 1) or true:#tail_nodes.size() > 1:
 			speed = (speed & 2) + (1 - (speed & 1))
 
 func get_step_time():
@@ -126,12 +129,14 @@ func logic(delta):
 	
 	var e = global.map.get_enemy(next)
 	if e:
-		if state == NORMAL:
-			kill()
-			return
-		else:
-			e.kill()
-			apple_points += 1
+		e.kill()
+		apple_points += 1
+#		if state == NORMAL and false:
+#			kill()
+#			return
+#		else:
+#			e.kill()
+#			apple_points += 1
 	
 	# update apple points
 	var a = global.map.get_apple(next)
@@ -160,6 +165,8 @@ func logic(delta):
 	map_pos = next
 	input_dir = 0
 	update_camera()
+	$UI/Control/score.text = str(len(tail_nodes))
+	global.update_score(len(tail_nodes))
 
 func start_powerup():
 	state = POWERUP
@@ -170,7 +177,7 @@ func start_powerup():
 func finish_powerup():
 	state = NORMAL
 	BASE_FRAME = 0
-	speed &= 1
+	speed = 0
 	update_all_skins()
 
 func update_all_skins():
@@ -195,7 +202,7 @@ func is_at(p:Vector2) -> bool:
 	return p == map_pos or p in tail_points
  
 func can_hit(p: Vector2, s: Vector2) -> bool:
-	return state == NORMAL and (p == map_pos or p in tail_points)
+	return state == NORMAL and ((p == map_pos and s - p != global.dir2vec(direction)) or p in tail_points)
 
 func hit(pos):
 	if pos == map_pos:
