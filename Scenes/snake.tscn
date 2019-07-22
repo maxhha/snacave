@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Scenes/snake.gd" type="Script" id=1]
 [ext_resource path="res://Sprites/sprites.png" type="Texture" id=2]
@@ -9,6 +9,9 @@
 [ext_resource path="res://Fonts/pixelFJ8pt1__.TTF" type="DynamicFontData" id=7]
 [ext_resource path="res://Scenes/dir_arrow.gd" type="Script" id=8]
 [ext_resource path="res://Sprites/icon-dir.png" type="Texture" id=9]
+[ext_resource path="res://Sounds/pickup.wav" type="AudioStream" id=10]
+[ext_resource path="res://Sounds/powerup.wav" type="AudioStream" id=11]
+[ext_resource path="res://Sounds/powerdown.wav" type="AudioStream" id=12]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 128, 128 )
@@ -32,6 +35,7 @@ hframes = 16
 frame = 8
 
 [node name="UI" type="CanvasLayer" parent="."]
+editor/display_folded = true
 
 [node name="Control" type="Control" parent="UI"]
 material = ExtResource( 3 )
@@ -152,3 +156,17 @@ use_parent_material = true
 position = Vector2( 158, 0 )
 scale = Vector2( 8, 8 )
 texture = ExtResource( 9 )
+
+[node name="sound" type="Node" parent="."]
+
+[node name="pickup" type="AudioStreamPlayer" parent="sound"]
+stream = ExtResource( 10 )
+bus = "Sounds"
+
+[node name="powerup" type="AudioStreamPlayer" parent="sound"]
+stream = ExtResource( 11 )
+bus = "Sounds"
+
+[node name="powerdown" type="AudioStreamPlayer" parent="sound"]
+stream = ExtResource( 12 )
+bus = "Sounds"

@@ -18,9 +18,6 @@ var tail_nodes = []
 var tail_points = {}
 var apple_points = 0
 
-
-
-
 var TailPart = preload("res://Scenes/snake_tail.tscn")
 
 onready var head = $head
@@ -102,7 +99,7 @@ func logic(delta):
 	#collsision with tail
 	if next in tail_points:
 		var indx = tail_nodes.find(tail_points[next])
-		if indx+1 < len(tail_nodes):
+		if indx+1 < len(tail_nodes)+apple_points:
 			kill()
 			return
 	
@@ -135,11 +132,10 @@ func logic(delta):
 	var e = global.map.get_enemy(next)
 	if e:
 		if e.is_in_group('powerup'):
-			powerup_timer = POWERUP_TIMEOUT
-			if state == NORMAL:
-				start_powerup()
+			start_powerup()
 		else:
 			apple_points += 1
+			$sound/pickup.play()
 		e.kill()
 		
 #		e.kill()
@@ -155,11 +151,10 @@ func logic(delta):
 	var a = global.map.get_apple(next)
 	if a:
 		if a.is_in_group('powerup'):
-			powerup_timer = POWERUP_TIMEOUT
-			if state == NORMAL:
-				start_powerup()
+			start_powerup()
 		else:
 			apple_points += 1
+			$sound/pickup.play()
 		global.map.remove_apple(next)
 	
 	# update head
@@ -178,16 +173,21 @@ func logic(delta):
 	map_pos = next
 	input_dir = 0
 	update_camera()
-	$UI/Control/score.text = str(len(tail_nodes))
-	global.update_score(len(tail_nodes))
+	var score = len(tail_nodes) + apple_points
+	$UI/Control/score.text = str(score)
+	global.update_score(score)
 
 func start_powerup():
-	state = POWERUP
-	BASE_FRAME = head.hframes * 2
-	speed |= 2
-	update_all_skins()
+	powerup_timer = POWERUP_TIMEOUT
+	$sound/powerup.play()
+	if state == NORMAL:
+		state = POWERUP
+		BASE_FRAME = head.hframes * 2
+		speed |= 2
+		update_all_skins()
 
 func finish_powerup():
+	$sound/powerdown.play()
 	state = NORMAL
 	BASE_FRAME = 0
 	speed = 0

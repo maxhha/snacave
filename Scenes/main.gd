@@ -140,7 +140,8 @@ func _ready():
 	get_tree().connect("screen_resized", self, "update_border_polygon")
 	if global.first_game:
 		$UI/anim.play('mainmenu_fadein')
-	
+	else:
+		$UI/start_select.play()
 	global.first_game = false
 
 func spawn_enemy(i):
@@ -155,7 +156,7 @@ func spawn_enemy(i):
 			and not has_wall(p)
 			and not (is_instance_valid(global.snake) 
 					and global.snake.is_at(p)
-					and (p - global.snake.map_pos).length_squared() > s*1.5
+					and (p - global.snake.map_pos).length_squared() <= s*1.5
 			)):
 			break
 	e.global_position = map2global(p)
@@ -232,13 +233,14 @@ func update_reachable_places(should_yeild=true):
 var Apple = preload("res://Scenes/apple.tscn")
 var PowerupApple = preload("res://Scenes/powerup_apple.tscn")
 
-func random_place_apple(a):
+func random_place_apple(a, one_way=false):
 	if not a.is_inside_tree():
 		add_child(a)
 	global.apple = a
 	var p
 	var r = $walls.get_used_rect()
-	while true:
+	var err = 0
+	while err < 1000:
 		p = Vector2(randi() % int(r.size.x), randi() % int(r.size.y)) + r.position
 		
 		if (apples.get(p) == null 
@@ -249,8 +251,14 @@ func random_place_apple(a):
 			var s = 0
 			for i in range(4):
 				s += int(reachables.get(p + global.dir2vec(i), false))
-			if s > 1:
+			if s > 1 or one_way:
 				break
+		err += 1
+	
+	if err >= 1000:
+		a.queue_free()
+		return random_place_apple(PowerupApple.instance(), true)
+	
 	a.global_position = map2global(p)
 	apples[p] = a
 

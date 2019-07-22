@@ -1,11 +1,13 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://Scripts/pixel-shader.tres" type="Material" id=1]
 [ext_resource path="res://Scenes/main.gd" type="Script" id=2]
 [ext_resource path="res://Sprites/sprites.png" type="Texture" id=3]
 [ext_resource path="res://Fonts/pixelFJ8pt1__.TTF" type="DynamicFontData" id=4]
 [ext_resource path="res://Sprites/btn-play.png" type="Texture" id=5]
-[ext_resource path="res://Sprites/logo.png" type="Texture" id=6]
+[ext_resource path="res://Sounds/dead.wav" type="AudioStream" id=6]
+[ext_resource path="res://Sprites/logo.png" type="Texture" id=7]
+[ext_resource path="res://Sounds/select.wav" type="AudioStream" id=8]
 
 [sub_resource type="TileSet" id=1]
 0/name = "wall"
@@ -43,18 +45,17 @@ action = "speedup"
 [sub_resource type="ShortCut" id=5]
 shortcut = SubResource( 4 )
 
-[sub_resource type="AtlasTexture" id=8]
+[sub_resource type="AtlasTexture" id=6]
 flags = 4
-atlas = ExtResource( 6 )
+atlas = ExtResource( 7 )
 region = Rect2( 0, 0, 776, 268 )
 
-[sub_resource type="AtlasTexture" id=9]
+[sub_resource type="AtlasTexture" id=7]
 flags = 4
-atlas = ExtResource( 6 )
+atlas = ExtResource( 7 )
 region = Rect2( 0, 268, 776, 268 )
 
-[sub_resource type="Animation" id=6]
-resource_name = "gameover_fadein"
+[sub_resource type="Animation" id=8]
 length = 1.6
 tracks/0/type = "value"
 tracks/0/path = NodePath("gameover:visible")
@@ -152,9 +153,20 @@ tracks/7/keys = {
 "update": 0,
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
 }
+tracks/8/type = "value"
+tracks/8/path = NodePath("gameover/dead:playing")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
 
-[sub_resource type="Animation" id=7]
-resource_name = "mainmenu_fadein"
+[sub_resource type="Animation" id=9]
 length = 1.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("main_menu:visible")
@@ -243,6 +255,7 @@ smoothing_enabled = true
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="gameover" type="Control" parent="UI"]
+editor/display_folded = true
 visible = false
 material = ExtResource( 1 )
 anchor_right = 1.0
@@ -251,7 +264,7 @@ anchor_bottom = 1.0
 [node name="bg" type="ColorRect" parent="UI/gameover"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 0.220588, 0.111765, 0.267647, 0.376471 )
+color = Color( 0.294118, 0.14902, 0.356863, 0.501961 )
 
 [node name="vbox1" type="VBoxContainer" parent="UI/gameover"]
 use_parent_material = true
@@ -332,7 +345,6 @@ text = "10"
 align = 1
 
 [node name="play" type="TextureButton" parent="UI/gameover"]
-modulate = Color( 1, 1, 1, 0 )
 self_modulate = Color( 0.698039, 0.968627, 0.537255, 1 )
 use_parent_material = true
 anchor_left = 0.5
@@ -344,14 +356,18 @@ margin_top = 40.3892
 margin_right = 128.0
 margin_bottom = 296.389
 rect_min_size = Vector2( 256, 256 )
-disabled = true
 shortcut_in_tooltip = false
 shortcut = SubResource( 5 )
 texture_normal = ExtResource( 5 )
 expand = true
 stretch_mode = 3
 
+[node name="dead" type="AudioStreamPlayer" parent="UI/gameover"]
+stream = ExtResource( 6 )
+bus = "Sounds"
+
 [node name="main_menu" type="Control" parent="UI"]
+editor/display_folded = true
 visible = false
 material = ExtResource( 1 )
 anchor_right = 1.0
@@ -371,7 +387,7 @@ anchor_bottom = 0.5
 margin_left = -388.0
 margin_top = -268.0
 margin_right = 388.0
-texture = SubResource( 8 )
+texture = SubResource( 6 )
 
 [node name="tex2" type="TextureRect" parent="UI/main_menu"]
 use_parent_material = true
@@ -382,7 +398,7 @@ anchor_bottom = 0.5
 margin_left = -388.0
 margin_right = 388.0
 margin_bottom = 268.0
-texture = SubResource( 9 )
+texture = SubResource( 7 )
 
 [node name="play" type="TextureButton" parent="UI/main_menu"]
 modulate = Color( 1, 1, 1, 0 )
@@ -405,7 +421,11 @@ expand = true
 stretch_mode = 3
 
 [node name="anim" type="AnimationPlayer" parent="UI"]
-anims/gameover_fadein = SubResource( 6 )
-anims/mainmenu_fadein = SubResource( 7 )
+anims/gameover_fadein = SubResource( 8 )
+anims/mainmenu_fadein = SubResource( 9 )
+
+[node name="start_select" type="AudioStreamPlayer" parent="UI"]
+stream = ExtResource( 8 )
+bus = "Sounds"
 [connection signal="pressed" from="UI/gameover/play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="UI/main_menu/play" to="." method="_on_play_pressed"]
