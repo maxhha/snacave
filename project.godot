@@ -15,7 +15,7 @@ _global_script_class_icons={
 
 [application]
 
-config/name="snake-defence"
+config/name="Snacave"
 run/main_scene="res://Scenes/main.tscn"
 boot_splash/image="res://Sprites/logo.png"
 boot_splash/fullsize=false
@@ -53,8 +53,13 @@ speedup={
  ]
 }
 
+[logging]
+
+file_logging/enable_file_logging=true
+
 [rendering]
 
+quality/driver/fallback_to_gles2=true
 vram_compression/import_etc=true
 environment/default_clear_color=Color( 0.513726, 0.878431, 0.298039, 1 )
 environment/default_environment="res://default_env.tres"

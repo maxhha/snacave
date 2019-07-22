@@ -240,13 +240,13 @@ func random_place_apple(a, one_way=false):
 		add_child(a)
 	global.apple = a
 	var p
-	var r = $walls.get_used_rect()
+	var r = reachables.keys()
 	var err = 0
 	while err < 1000:
-		p = Vector2(randi() % int(r.size.x), randi() % int(r.size.y)) + r.position
+		var i = randi() % r.size()
+		p = r[i]
 		
 		if (apples.get(p) == null 
-			and p in reachables
 			and not (is_instance_valid(global.snake) 
 					and global.snake.is_at(p)
 			)):
