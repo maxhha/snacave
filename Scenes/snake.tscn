@@ -158,6 +158,7 @@ scale = Vector2( 8, 8 )
 texture = ExtResource( 9 )
 
 [node name="sound" type="Node" parent="."]
+editor/display_folded = true
 
 [node name="pickup" type="AudioStreamPlayer" parent="sound"]
 stream = ExtResource( 10 )

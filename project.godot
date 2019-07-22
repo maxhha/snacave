@@ -25,6 +25,7 @@ config/icon="res://icon.png"
 [autoload]
 
 global="*res://Scripts/global.gd"
+BGMusic="*res://Sounds/bg_music.tscn"
 
 [display]
 
