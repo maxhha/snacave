@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Scenes/snake.gd" type="Script" id=1]
 [ext_resource path="res://Sprites/sprites.png" type="Texture" id=2]
@@ -7,6 +7,8 @@
 [ext_resource path="res://Sprites/btn-speed-up.png" type="Texture" id=5]
 [ext_resource path="res://Sprites/btn-right.png" type="Texture" id=6]
 [ext_resource path="res://Fonts/pixelFJ8pt1__.TTF" type="DynamicFontData" id=7]
+[ext_resource path="res://Scenes/dir_arrow.gd" type="Script" id=8]
+[ext_resource path="res://Sprites/icon-dir.png" type="Texture" id=9]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 128, 128 )
@@ -60,6 +62,7 @@ margin_bottom = -56.0
 rect_min_size = Vector2( 64, 64 )
 
 [node name="btn" type="TouchScreenButton" parent="UI/Control/buttos/left/wrapper"]
+modulate = Color( 0.698039, 0.968627, 0.537255, 1 )
 use_parent_material = true
 normal = ExtResource( 4 )
 shape = SubResource( 1 )
@@ -87,6 +90,7 @@ margin_bottom = -56.0
 rect_min_size = Vector2( 64, 64 )
 
 [node name="btn" type="TouchScreenButton" parent="UI/Control/buttos/center/wrapper"]
+modulate = Color( 0.698039, 0.968627, 0.537255, 1 )
 use_parent_material = true
 normal = ExtResource( 5 )
 shape = SubResource( 1 )
@@ -114,6 +118,7 @@ margin_bottom = -56.0
 rect_min_size = Vector2( 64, 64 )
 
 [node name="btn" type="TouchScreenButton" parent="UI/Control/buttos/right/wrapper"]
+modulate = Color( 0.698039, 0.968627, 0.537255, 1 )
 use_parent_material = true
 normal = ExtResource( 6 )
 shape = SubResource( 1 )
@@ -122,6 +127,7 @@ action = "turn_right"
 visibility_mode = 1
 
 [node name="score" type="Label" parent="UI/Control"]
+modulate = Color( 0.901961, 0.301961, 0.0156863, 1 )
 use_parent_material = true
 anchor_left = 0.5
 anchor_right = 0.5
@@ -131,3 +137,18 @@ margin_right = 20.0
 margin_bottom = 70.0
 custom_fonts/font = SubResource( 2 )
 text = "2"
+
+[node name="dir" type="Control" parent="UI/Control"]
+use_parent_material = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+script = ExtResource( 8 )
+
+[node name="arrow" type="Sprite" parent="UI/Control/dir"]
+modulate = Color( 0.901961, 0.301961, 0.0156863, 1 )
+use_parent_material = true
+position = Vector2( 158, 0 )
+scale = Vector2( 8, 8 )
+texture = ExtResource( 9 )

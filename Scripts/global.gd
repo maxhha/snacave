@@ -9,6 +9,8 @@ var camera
 # warning-ignore:unused_class_variable
 var snake
 # warning-ignore:unused_class_variable
+var apple
+# warning-ignore:unused_class_variable
 var max_score = 0
 var new_max_score = false
 var sess_max_score = 0

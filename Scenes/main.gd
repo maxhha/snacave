@@ -2,7 +2,7 @@ extends Node2D
 
 const UPDATE_REACHABLE_PLACES_TIMEOUT = 20
 
-const MAX_ENEMIES = 40
+const MAX_ENEMIES = 28
 const MAX_APPLES = 1
 const POWERUP_N = 6
 const POWERUP_PROB = 0.2
@@ -28,8 +28,8 @@ const EnemyClasses = [
 	preload("res://Scenes/enemy4.tscn")
 ]
 
-const EnemyClassesProb = [6,6,1,1]
-const EnemyClassesProbSum = 6+6+1+1
+const EnemyClassesProb = [4,4,1,1]
+const EnemyClassesProbSum = 4+4+1+1
 
 func _ready():
 	global.sess_max_score = 0
@@ -42,7 +42,7 @@ func _ready():
 	var plus3_mask = M.create_map_from_string(".#.\n#@#\n.#.", 1)
 	var plus5_mask = M.create_map_from_string("..#..\n..#..\n##@##\n..#..\n..#..", 1)
 	var line3 = M.create_map_from_string("##@##\n", 1)
-	m.bit_noise(0.45)
+	m.bit_noise(0.4)
 	m.and_mask(plus3_mask)
 	m.or_mask(plus5_mask)
 	m.sub2i(1)
@@ -88,7 +88,7 @@ func _ready():
 	for i in range(max(int(global.first_game), MAX_ENEMIES)):
 		var s = i % EnemyClassesProbSum
 		i = 0
-		while s > 0:
+		while i < len(EnemyClassesProb) and s >= EnemyClassesProb[i]:
 			s -= EnemyClassesProb[i]
 			i += 1
 		
@@ -154,7 +154,7 @@ func spawn_enemy(i):
 			and not has_wall(p)
 			and not (is_instance_valid(global.snake) 
 					and global.snake.is_at(p)
-					and (p - global.snake.map_pos).length_squared() > s
+					and (p - global.snake.map_pos).length_squared() > s*1.5
 			)):
 			break
 	e.global_position = map2global(p)
@@ -234,6 +234,7 @@ var PowerupApple = preload("res://Scenes/powerup_apple.tscn")
 func random_place_apple(a):
 	if not a.is_inside_tree():
 		add_child(a)
+	global.apple = a
 	var p
 	while true:
 		p = Vector2(randi() % WIDTH, randi() % HEIGHT)

@@ -1,12 +1,11 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Scripts/pixel-shader.tres" type="Material" id=1]
 [ext_resource path="res://Scenes/main.gd" type="Script" id=2]
 [ext_resource path="res://Sprites/sprites.png" type="Texture" id=3]
 [ext_resource path="res://Fonts/pixelFJ8pt1__.TTF" type="DynamicFontData" id=4]
 [ext_resource path="res://Sprites/btn-play.png" type="Texture" id=5]
-[ext_resource path="res://Sprites/logo_part1.png" type="Texture" id=6]
-[ext_resource path="res://Sprites/logo_part2.png" type="Texture" id=7]
+[ext_resource path="res://Sprites/logo.png" type="Texture" id=6]
 
 [sub_resource type="TileSet" id=1]
 0/name = "wall"
@@ -43,6 +42,16 @@ action = "speedup"
 
 [sub_resource type="ShortCut" id=5]
 shortcut = SubResource( 4 )
+
+[sub_resource type="AtlasTexture" id=8]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 0, 0, 776, 268 )
+
+[sub_resource type="AtlasTexture" id=9]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 0, 268, 776, 268 )
 
 [sub_resource type="Animation" id=6]
 resource_name = "gameover_fadein"
@@ -261,6 +270,7 @@ alignment = 2
 
 [node name="wow" type="Label" parent="UI/gameover/vbox1"]
 visible = false
+self_modulate = Color( 0.698039, 0.968627, 0.537255, 1 )
 use_parent_material = true
 margin_right = 348.0
 margin_bottom = 111.0
@@ -270,6 +280,7 @@ new record"
 align = 1
 
 [node name="lbl_score" type="Label" parent="UI/gameover/vbox1"]
+self_modulate = Color( 0.698039, 0.968627, 0.537255, 1 )
 use_parent_material = true
 margin_top = 64.0
 margin_right = 348.0
@@ -279,6 +290,7 @@ text = "current is"
 align = 1
 
 [node name="score" type="Label" parent="UI/gameover/vbox1"]
+self_modulate = Color( 0.901961, 0.301961, 0.0156863, 1 )
 use_parent_material = true
 margin_top = 134.0
 margin_right = 348.0
@@ -301,6 +313,7 @@ custom_constants/separation = 16
 alignment = 2
 
 [node name="lbl_hiscore" type="Label" parent="UI/gameover/vbox2"]
+self_modulate = Color( 0.698039, 0.968627, 0.537255, 1 )
 use_parent_material = true
 margin_right = 396.0
 margin_bottom = 54.0
@@ -309,6 +322,7 @@ text = "the highest is"
 align = 1
 
 [node name="max_score" type="Label" parent="UI/gameover/vbox2"]
+self_modulate = Color( 0.901961, 0.301961, 0.0156863, 1 )
 use_parent_material = true
 margin_top = 70.0
 margin_right = 396.0
@@ -319,6 +333,7 @@ align = 1
 
 [node name="play" type="TextureButton" parent="UI/gameover"]
 modulate = Color( 1, 1, 1, 0 )
+self_modulate = Color( 0.698039, 0.968627, 0.537255, 1 )
 use_parent_material = true
 anchor_left = 0.5
 anchor_top = 0.5
@@ -356,7 +371,7 @@ anchor_bottom = 0.5
 margin_left = -388.0
 margin_top = -268.0
 margin_right = 388.0
-texture = ExtResource( 6 )
+texture = SubResource( 8 )
 
 [node name="tex2" type="TextureRect" parent="UI/main_menu"]
 use_parent_material = true
@@ -367,10 +382,11 @@ anchor_bottom = 0.5
 margin_left = -388.0
 margin_right = 388.0
 margin_bottom = 268.0
-texture = ExtResource( 7 )
+texture = SubResource( 9 )
 
 [node name="play" type="TextureButton" parent="UI/main_menu"]
 modulate = Color( 1, 1, 1, 0 )
+self_modulate = Color( 0.698039, 0.968627, 0.537255, 1 )
 use_parent_material = true
 anchor_left = 0.5
 anchor_top = 0.5

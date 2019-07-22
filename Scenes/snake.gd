@@ -100,9 +100,11 @@ func logic(delta):
 	
 	#collsision with tail
 	if next in tail_points:
-		kill()
-		return
-#		var indx = tail_nodes.find(tail_points[next])
+		var indx = tail_nodes.find(tail_points[next])
+		if indx+1 < len(tail_nodes):
+			kill()
+			return
+	
 #		cut_tail(indx+1)
 	
 	# move sigment 
