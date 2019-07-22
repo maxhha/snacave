@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://Scripts/pixel-shader.tres" type="Material" id=1]
 [ext_resource path="res://Scenes/main.gd" type="Script" id=2]
@@ -6,8 +6,10 @@
 [ext_resource path="res://Fonts/pixelFJ8pt1__.TTF" type="DynamicFontData" id=4]
 [ext_resource path="res://Sprites/btn-play.png" type="Texture" id=5]
 [ext_resource path="res://Sounds/dead.wav" type="AudioStream" id=6]
-[ext_resource path="res://Sprites/logo.png" type="Texture" id=7]
-[ext_resource path="res://Sounds/select.wav" type="AudioStream" id=8]
+[ext_resource path="res://Sounds/wow.wav" type="AudioStream" id=7]
+[ext_resource path="res://Sprites/logo.png" type="Texture" id=8]
+[ext_resource path="res://Sounds/select.wav" type="AudioStream" id=9]
+[ext_resource path="res://Scenes/sound_control.tscn" type="PackedScene" id=10]
 
 [sub_resource type="TileSet" id=1]
 0/name = "wall"
@@ -47,12 +49,12 @@ shortcut = SubResource( 4 )
 
 [sub_resource type="AtlasTexture" id=6]
 flags = 4
-atlas = ExtResource( 7 )
+atlas = ExtResource( 8 )
 region = Rect2( 0, 0, 776, 268 )
 
 [sub_resource type="AtlasTexture" id=7]
 flags = 4
-atlas = ExtResource( 7 )
+atlas = ExtResource( 8 )
 region = Rect2( 0, 268, 776, 268 )
 
 [sub_resource type="Animation" id=8]
@@ -228,6 +230,18 @@ tracks/4/keys = {
 "update": 0,
 "values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
+tracks/5/type = "value"
+tracks/5/path = NodePath("sound_control:modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 1.1, 1.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
 
 [node name="main" type="Node2D"]
 material = ExtResource( 1 )
@@ -267,6 +281,7 @@ anchor_bottom = 1.0
 color = Color( 0.294118, 0.14902, 0.356863, 0.501961 )
 
 [node name="vbox1" type="VBoxContainer" parent="UI/gameover"]
+editor/display_folded = true
 use_parent_material = true
 anchor_left = 0.5
 anchor_top = 0.5
@@ -313,6 +328,7 @@ text = "10"
 align = 1
 
 [node name="vbox2" type="VBoxContainer" parent="UI/gameover"]
+editor/display_folded = true
 use_parent_material = true
 anchor_left = 0.5
 anchor_top = 0.5
@@ -366,6 +382,10 @@ stretch_mode = 3
 stream = ExtResource( 6 )
 bus = "Sounds"
 
+[node name="wow" type="AudioStreamPlayer" parent="UI/gameover"]
+stream = ExtResource( 7 )
+bus = "Sounds"
+
 [node name="main_menu" type="Control" parent="UI"]
 editor/display_folded = true
 visible = false
@@ -376,7 +396,7 @@ anchor_bottom = 1.0
 [node name="bg" type="ColorRect" parent="UI/main_menu"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 0.294118, 0.14902, 0.356863, 1 )
+color = Color( 0.294118, 0.14902, 0.356863, 0.501961 )
 
 [node name="tex" type="TextureRect" parent="UI/main_menu"]
 use_parent_material = true
@@ -390,6 +410,7 @@ margin_right = 388.0
 texture = SubResource( 6 )
 
 [node name="tex2" type="TextureRect" parent="UI/main_menu"]
+modulate = Color( 1, 1, 1, 0 )
 use_parent_material = true
 anchor_left = 0.5
 anchor_top = 0.5
@@ -401,7 +422,6 @@ margin_bottom = 268.0
 texture = SubResource( 7 )
 
 [node name="play" type="TextureButton" parent="UI/main_menu"]
-modulate = Color( 1, 1, 1, 0 )
 self_modulate = Color( 0.698039, 0.968627, 0.537255, 1 )
 use_parent_material = true
 anchor_left = 0.5
@@ -413,7 +433,6 @@ margin_top = -11.0081
 margin_right = 128.0
 margin_bottom = 244.992
 rect_min_size = Vector2( 256, 256 )
-disabled = true
 shortcut_in_tooltip = false
 shortcut = SubResource( 5 )
 texture_normal = ExtResource( 5 )
@@ -425,7 +444,17 @@ anims/gameover_fadein = SubResource( 8 )
 anims/mainmenu_fadein = SubResource( 9 )
 
 [node name="start_select" type="AudioStreamPlayer" parent="UI"]
-stream = ExtResource( 8 )
+stream = ExtResource( 9 )
 bus = "Sounds"
+
+[node name="sound_control" parent="UI" instance=ExtResource( 10 )]
+material = ExtResource( 1 )
+use_parent_material = false
+anchor_left = 1.0
+anchor_bottom = 0.0
+margin_left = -180.0
+margin_top = 16.0
+margin_right = -16.0
+margin_bottom = 96.0
 [connection signal="pressed" from="UI/gameover/play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="UI/main_menu/play" to="." method="_on_play_pressed"]

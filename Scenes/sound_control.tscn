@@ -1,0 +1,55 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://sound_control.gd" type="Script" id=1]
+[ext_resource path="res://Sprites/sound_icons.png" type="Texture" id=2]
+
+[sub_resource type="AtlasTexture" id=1]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 80, 80 )
+
+[sub_resource type="AtlasTexture" id=2]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 0, 80, 80, 80 )
+
+[sub_resource type="AtlasTexture" id=3]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 80, 0, 80, 80 )
+
+[sub_resource type="AtlasTexture" id=4]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 80, 80, 80, 80 )
+
+[node name="sound_control" type="HBoxContainer"]
+use_parent_material = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -860.0
+margin_bottom = -520.0
+script = ExtResource( 1 )
+
+[node name="music" type="TextureButton" parent="."]
+use_parent_material = true
+margin_right = 80.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 80, 80 )
+toggle_mode = true
+shortcut_in_tooltip = false
+texture_normal = SubResource( 1 )
+texture_pressed = SubResource( 2 )
+
+[node name="sound" type="TextureButton" parent="."]
+use_parent_material = true
+margin_left = 84.0
+margin_right = 164.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 80, 80 )
+toggle_mode = true
+shortcut_in_tooltip = false
+texture_normal = SubResource( 3 )
+texture_pressed = SubResource( 4 )
+[connection signal="toggled" from="music" to="." method="_on_music_toggled"]
+[connection signal="toggled" from="sound" to="." method="_on_sound_toggled"]

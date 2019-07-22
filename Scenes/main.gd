@@ -189,6 +189,8 @@ func _on_player_dead():
 	add_tail_wall(t)
 	$UI/gameover/vbox1/wow.visible = global.new_max_score
 	$UI/gameover/vbox1/lbl_score.visible = not global.new_max_score
+	if global.new_max_score:
+		$UI/gameover/wow.play()
 	$UI/gameover/vbox1/score.text = str(global.sess_max_score)
 	$UI/gameover/vbox2/max_score.text = str(global.max_score)
 	$UI/anim.play('gameover_fadein')
