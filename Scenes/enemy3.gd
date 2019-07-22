@@ -12,7 +12,6 @@ func logic(delta):
 		direction = (direction + randi() % 2 * 2 + 1) % 4
 		frame = BASE_FRAME + direction
 	else:
-		var moved = false
 		for i in [0, 2]:
 			var d = (direction + i) % 4
 			var next = map_pos + global.dir2vec(d)

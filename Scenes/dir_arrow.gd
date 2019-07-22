@@ -1,5 +1,6 @@
 extends Control
 
+# warning-ignore:unused_argument
 func _process(delta):
 	
 	if is_instance_valid(global.apple) and is_instance_valid(global.snake):

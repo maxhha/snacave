@@ -3,6 +3,7 @@ extends Sprite
 export (float) var STEP_TIME = 0.5
 export (int) var BASE_FRAME = 44
 var direction = randi() % 4
+# warning-ignore:unused_class_variable
 var last_map_pos
 var map_pos
 var step_timer = randf()
@@ -50,6 +51,7 @@ func move(next):
 	global.map.move_enemy(self)
 	update_sprite()
 	
+# warning-ignore:unused_argument
 func logic(delta):
 	pass
 

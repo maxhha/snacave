@@ -8,11 +8,10 @@ const POWERUP_MIN_SPEED = 0.5
 var BASE_FRAME = 0
 var speed = 0
 
-var linear_vel = Vector2(1,0)
 var direction = 0
 var map_pos
 var timer = 0
-var speedup_timer = 0
+#var speedup_timer = 0
 var powerup_timer = 0
 var input_dir = 0
 var tail_nodes = []
@@ -65,9 +64,10 @@ func _process(delta):
 #		t.queue_free()
 	var time = get_step_time()
 	if timer >= time and is_instance_valid(self):
+# warning-ignore:unused_variable
 		var d = timer
 		timer = fmod(timer , time)
-		logic(delta)
+		logic(d)
 		if state == POWERUP and powerup_timer == 0:
 			finish_powerup()
 	
@@ -85,6 +85,7 @@ func get_step_time():
 	else:
 		return lerp(POWERUP_MIN_SPEED, POWERUP_MAX_SPEED, min(1, powerup_timer/POWERUP_TIMEOUT))
 
+# warning-ignore:unused_argument
 func logic(delta):
 	
 	var next_direction = (direction + input_dir + 4) % 4
@@ -213,6 +214,8 @@ func cut_tail(indx = 0):
 func is_at(p:Vector2) -> bool:
 	return p == map_pos or p in tail_points
  
+# warning-ignore:unused_argument
+# warning-ignore:unused_argument
 func can_hit(p: Vector2, s: Vector2) -> bool:
 	return false #state == NORMAL and ((p == map_pos and s - p != global.dir2vec(direction)) or p in tail_points)
 

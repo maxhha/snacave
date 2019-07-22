@@ -17,7 +17,7 @@ var apples = {}
 var walls = {}
 var enemies = {}
 var timer = 0
-var spawners = []
+#var spawners = []
 
 var reachables = {}
 
@@ -32,6 +32,7 @@ const EnemyClassesProb = [4,4,1,1]
 const EnemyClassesProbSum = 4+4+1+1
 
 func _ready():
+	
 	global.sess_max_score = 0
 	global.new_max_score = false
 	randomize()
@@ -236,8 +237,9 @@ func random_place_apple(a):
 		add_child(a)
 	global.apple = a
 	var p
+	var r = $walls.get_used_rect()
 	while true:
-		p = Vector2(randi() % WIDTH, randi() % HEIGHT)
+		p = Vector2(randi() % int(r.size.x), randi() % int(r.size.y)) + r.position
 		
 		if (apples.get(p) == null 
 			and p in reachables
