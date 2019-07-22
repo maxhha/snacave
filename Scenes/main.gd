@@ -2,13 +2,16 @@ extends Node2D
 
 const UPDATE_REACHABLE_PLACES_TIMEOUT = 20
 
-const MAX_ENEMIES = 6
-const MAX_APPLES = 3
+const MAX_ENEMIES = 40
+const MAX_APPLES = 1
+const POWERUP_N = 6
 const POWERUP_PROB = 0.2
-const COUNT_SPAWNERS = 3
+#const COUNT_SPAWNERS = 0
 
-const WIDTH = 32
-const HEIGHT = 32
+var apple_number = POWERUP_N - 4
+
+const WIDTH = 80
+const HEIGHT = 80
 
 var apples = {}
 var walls = {}
@@ -20,10 +23,13 @@ var reachables = {}
 
 const EnemyClasses = [
 	preload("res://Scenes/enemy1.tscn"),
-#	preload("res://Scenes/enemy2.tscn"),
-#	preload("res://Scenes/enemy3.tscn"),
-#	preload("res://Scenes/enemy4.tscn")
+	preload("res://Scenes/enemy2.tscn"),
+	preload("res://Scenes/enemy3.tscn"),
+	preload("res://Scenes/enemy4.tscn")
 ]
+
+const EnemyClassesProb = [6,6,1,1]
+const EnemyClassesProbSum = 6+6+1+1
 
 func _ready():
 	global.sess_max_score = 0
@@ -36,7 +42,7 @@ func _ready():
 	var plus3_mask = M.create_map_from_string(".#.\n#@#\n.#.", 1)
 	var plus5_mask = M.create_map_from_string("..#..\n..#..\n##@##\n..#..\n..#..", 1)
 	var line3 = M.create_map_from_string("##@##\n", 1)
-	m.bit_noise(0.6)
+	m.bit_noise(0.45)
 	m.and_mask(plus3_mask)
 	m.or_mask(plus5_mask)
 	m.sub2i(1)
@@ -73,14 +79,19 @@ func _ready():
 		global.snake = s
 		update_reachable_places(false)
 	
-		for x in range(-10, 11):
-			for y in range(-10, 11):
+		for x in range(-7, 8):
+			for y in range(-7, 8):
 				m2.set(possible_starts[indx] + Vector2(x,y), 0)
 	
 	var last_enemy
 	
-	for i in range(MAX_ENEMIES):
-		i = i % len(EnemyClasses)
+	for i in range(max(int(global.first_game), MAX_ENEMIES)):
+		var s = i % EnemyClassesProbSum
+		i = 0
+		while s > 0:
+			s -= EnemyClassesProb[i]
+			i += 1
+		
 		var e = EnemyClasses[i].instance()
 		var p 
 		while true:
@@ -93,17 +104,17 @@ func _ready():
 		last_enemy = e
 	
 # warning-ignore:unused_variable
-	for i in range(COUNT_SPAWNERS):
-		var e = preload("res://Scenes/enemy-spawner.tscn").instance()
-		var p 
-		while true:
-			p = Vector2(randi() % WIDTH, randi() % HEIGHT)
-			if m2.get(p):
-				m2.set(p, 0)
-				break
-		e.global_position = map2global(p)
-		add_child(e)
-		spawners.push_back(e)
+#	for i in range(COUNT_SPAWNERS):
+#		var e = preload("res://Scenes/enemy-spawner.tscn").instance()
+#		var p 
+#		while true:
+#			p = Vector2(randi() % WIDTH, randi() % HEIGHT)
+#			if m2.get(p):
+#				m2.set(p, 0)
+#				break
+#		e.global_position = map2global(p)
+#		add_child(e)
+#		spawners.push_back(e)
 	
 	if not global.first_game:
 # warning-ignore:unused_variable
@@ -131,11 +142,22 @@ func _ready():
 	
 	global.first_game = false
 
-func spawn_enemy():
-	var i = randi() % len(EnemyClasses)
+func spawn_enemy(i):
 	var e = EnemyClasses[i].instance()
-	i = randi() % COUNT_SPAWNERS
-	e.global_position = spawners[i].global_position
+	var s = get_viewport_rect().size / global.CELL_SIZE
+	s = max(s.x, s.y)
+	var p
+	while true:
+		p = Vector2(randi() % WIDTH, randi() % HEIGHT)
+		
+		if (enemies.get(p) == null 
+			and not has_wall(p)
+			and not (is_instance_valid(global.snake) 
+					and global.snake.is_at(p)
+					and (p - global.snake.map_pos).length_squared() > s
+			)):
+			break
+	e.global_position = map2global(p)
 	add_enemy(e)
 
 func add_enemy(e):
@@ -171,12 +193,15 @@ func _on_player_dead():
 
 func _on_enemy_dead(e):
 	enemies.erase(e.last_map_pos)
-	spawn_enemy()
+	var s : String = e.filename
+	s = s.trim_prefix("res://Scenes/enemy").trim_suffix(".tscn")
+	spawn_enemy(int(s)-1)
 
 func _process(delta):
 	timer += delta
 	if timer > UPDATE_REACHABLE_PLACES_TIMEOUT:
 		timer -= UPDATE_REACHABLE_PLACES_TIMEOUT
+		update_reachable_places()
 
 func update_reachable_places(should_yeild=true):
 	if not is_instance_valid(global.snake):
@@ -212,12 +237,17 @@ func random_place_apple(a):
 	var p
 	while true:
 		p = Vector2(randi() % WIDTH, randi() % HEIGHT)
+		
 		if (apples.get(p) == null 
 			and p in reachables
 			and not (is_instance_valid(global.snake) 
 					and global.snake.is_at(p)
 			)):
-			break
+			var s = 0
+			for i in range(4):
+				s += int(reachables.get(p + global.dir2vec(i), false))
+			if s > 1:
+				break
 	a.global_position = map2global(p)
 	apples[p] = a
 
@@ -241,13 +271,22 @@ func get_apple(p):
 	return apples.get(p)
 
 func remove_apple(p):
-	if apples[p].is_in_group('powerup') or randf() >= POWERUP_PROB:
-		random_place_apple(Apple.instance())
-	else:
-		random_place_apple(PowerupApple.instance())
+	if not apples[p].is_in_group('oneshot'):
+		apple_number += 1
+		if apple_number % POWERUP_N > 0:
+			random_place_apple(Apple.instance())
+		else:
+			random_place_apple(PowerupApple.instance())
 	
 	apples[p].queue_free()
 	apples.erase(p)
+
+func place_apple(p):
+	var a = PowerupApple.instance()
+	a.add_to_group("oneshot")
+	add_child(a)
+	a.global_position = map2global(p)
+	apples[p] = a
 
 func add_tail_wall(t):
 	add_child(t)

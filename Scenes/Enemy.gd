@@ -18,6 +18,16 @@ func _process(delta):
 	if step_timer > STEP_TIME and not is_queued_for_deletion():
 		var d = step_timer
 		step_timer = fmod(step_timer, STEP_TIME)
+		
+#		if is_instance_valid(global.snake):
+#			var s = 0
+#			for i in range(4):
+#				var p = map_pos + global.dir2vec(i)
+#				s += int(can_move(p))
+#			if s == 0:
+#				kill()
+#				global.map.place_apple(map_pos)
+#				return
 		logic(d)
 
 func update_sprite():
@@ -25,7 +35,7 @@ func update_sprite():
 	global_position = global.map2global(map_pos)
 
 func can_move(next):
-	return not (global.map.has_wall(next) or global.map.get_enemy(next))
+	return not (global.map.has_wall(next) or global.map.get_enemy(next) or (is_instance_valid(global.snake) and global.snake.is_at(next)))
 
 func move(next):
 	var prev = map_pos

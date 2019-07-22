@@ -52,8 +52,6 @@ var state = NORMAL
 func _process(delta):
 	timer += delta
 
-	if state == POWERUP and powerup_timer == 0:
-		finish_powerup()
 	powerup_timer = max(0, powerup_timer - delta)
 
 #	if speed & 1 and tail_nodes.size() < 2:
@@ -70,6 +68,8 @@ func _process(delta):
 		var d = timer
 		timer = fmod(timer , time)
 		logic(delta)
+		if state == POWERUP and powerup_timer == 0:
+			finish_powerup()
 	
 	if Input.is_action_just_pressed("turn_left"):
 		input_dir = -1
@@ -100,8 +100,10 @@ func logic(delta):
 	
 	#collsision with tail
 	if next in tail_points:
-		var indx = tail_nodes.find(tail_points[next])
-		cut_tail(indx+1)
+		kill()
+		return
+#		var indx = tail_nodes.find(tail_points[next])
+#		cut_tail(indx+1)
 	
 	# move sigment 
 	var t
@@ -129,8 +131,16 @@ func logic(delta):
 	
 	var e = global.map.get_enemy(next)
 	if e:
+		if e.is_in_group('powerup'):
+			powerup_timer = POWERUP_TIMEOUT
+			if state == NORMAL:
+				start_powerup()
+		else:
+			apple_points += 1
 		e.kill()
-		apple_points += 1
+		
+#		e.kill()
+#		apple_points += 1
 #		if state == NORMAL and false:
 #			kill()
 #			return
@@ -202,7 +212,7 @@ func is_at(p:Vector2) -> bool:
 	return p == map_pos or p in tail_points
  
 func can_hit(p: Vector2, s: Vector2) -> bool:
-	return state == NORMAL and ((p == map_pos and s - p != global.dir2vec(direction)) or p in tail_points)
+	return false #state == NORMAL and ((p == map_pos and s - p != global.dir2vec(direction)) or p in tail_points)
 
 func hit(pos):
 	if pos == map_pos:
